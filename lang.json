@@ -1,0 +1,30 @@
+{
+  "lang": "mui",
+  "version": "0.1.0",
+  "tokens": [
+    {
+      "type": "identifier"
+    },
+    {
+      "type": "string"
+    },
+    {
+      "type": "nodeOpener"
+    }, 
+    {
+      "type": "nodeCloser"
+    },
+    {
+      "type": "whitespace"
+    },
+    {
+      "type": "newLine"
+    },
+    {
+      "type": "comma"
+    },
+    {
+      "type": "colon"
+    }
+  ]
+}
