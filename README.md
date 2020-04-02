@@ -1,49 +1,74 @@
-# mui
+# MUI
+This is the MUI markup language, its main purpose is to describe user interfaces.
 
-This is mui its a markup language, its mains purpose is to describe user interfaces.
-
-The center piece of the mui lang is a node, nodes are described this way:
-
-node ()
-
-Nodes can have tree kinds of things inside their parentesis, content, properties and nodes, they are not required for a node to be valid but they are positional
-
-content
-
-content is the value of the node, ex in the code bellow the content of the button node could be its label
-
-button(
-  'Click Me!'
-
-  color: '#666'
-  background: '#ff00ff'
-)
-
-properties
-
-properties are key value pairs they are defined like this
-
-key: 'value'
-
-So, a mui node with content, props and nodes would look like
-
+```
 screen (
-  'mainScreen'
+	'mainScreen'
+	
+	navBar (
+		height: '50px'
+		background: '#000'
+  
+		button (
+			ref: 'backButton'
+			iconPath: 'icons/arrowLeft.svg'
+			iconFill: '#fff'
+		)
 
-  navBar (
-    height: '50px'
-    background: '#000'
-
-    button (
-      ref: 'backButton'
-      iconPath: 'icons/arrowLeft.svg'
-      iconFill: '#fff'
-    )
-
-    button (
-      ref: 'homeButton'
-      iconPath: 'icons/menu.svg'
-      iconFill: '#fff'
-    )
-  )
+		button (
+			ref: 'homeButton'
+			iconPath: 'icons/menu.svg'
+			iconFill: '#fff'
+		)
+	)
 )
+```
+
+The most important mui lang element is the node element. Nodes can have three elements inside them: Content, Properties and Nodes. 
+
+They are optional, but they are positional, the order in which they are represented matter.
+
+### Content
+
+Content is just the value of the node it's represented by a string characters enclosed by single quotes. A node can only have one content element.
+```
+'Hello World'
+```
+
+### Properties
+
+Properties are key value pairs that are used to give a node any property, they are represented by the key, a colon and a value enclosed by single quotes.  A node can have multiple properties, separated by comma or new line.
+
+```
+key: 'value'
+```
+
+```
+keyOne: 'valueOne', keyTwo: 'valueTwo'
+```
+
+```
+keyOne: 'valueOne'
+keyTwo: 'valueTwo'
+```
+
+### Nodes
+
+Nodes are the most important element, they are represented by the node type and parenthesis.
+
+```
+node ()
+```
+
+A node with content, properties and nodes would look like this.
+
+```
+button (
+	ref: 'saveButton'
+	background: '#ccc'
+	color: '#000'
+	
+	icon (srcPath: 'icons/floppy.svg')
+	label ('SAVE')
+)
+```
