@@ -52,8 +52,6 @@ function tokenize(inputString, offset) {
   }
 };
 
-console.log(`MUI Lang v${lang.version}\n-----------`);
-
 compileRegex(lang.tokens);
 tokenize(inputString, 0);
-console.log(tokenizerOutput);
+console.log(JSON.stringify(tokenizerOutput));

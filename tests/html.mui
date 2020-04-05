@@ -1,0 +1,14 @@
+html (
+  head (
+    title (
+      'Hello MUI'
+    )
+  )
+  body (
+    h1 (
+      'memes'
+
+      style: 'color: green; background: rebeccapurple'
+    )
+  )
+)
