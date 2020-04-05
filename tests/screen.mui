@@ -1,0 +1,20 @@
+screen (
+	'mainScreen'
+
+	navBar (
+		height: '50px'
+		background: '#000'
+  
+		button (
+			ref: 'backButton'
+			iconPath: 'icons/arrowLeft.svg'
+			iconFill: '#fff'
+		)
+
+		button (
+			ref: 'homeButton'
+			iconPath: 'icons/menu.svg'
+			iconFill: '#fff'
+		)
+	)
+)

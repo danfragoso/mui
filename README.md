@@ -1,5 +1,5 @@
 # MUI
-This is the MUI markup language, its main purpose is to describe user interfaces.
+This is the MUI language, its main purpose is to describe user interfaces.
 
 ```
 screen (
