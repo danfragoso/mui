@@ -35,7 +35,9 @@ function buildTree(tokens) {
         if (!currentNode) {
           currentNode = createNode(token)
         } else {
-          currentNode.children.push(buildTree(tokens.slice(i)))
+          let childNode = buildTree(tokens.slice(i))
+          i = i + childNode[1]
+          currentNode.children.push(childNode[0])
         }
         break;
 
@@ -49,7 +51,7 @@ function buildTree(tokens) {
         break;
       
       case 'nodeCloser':
-        return currentNode;
+        return [currentNode, i];
       
       case 'prop':
         currentNode.props.push(createProp(token))
@@ -64,5 +66,5 @@ function buildTree(tokens) {
   }
 };
 
-//console.log(tokenizerOutput.tokens);
-console.log(buildTree(tokenizerOutput.tokens));
+let resultTree = buildTree(tokenizerOutput.tokens)
+console.log(JSON.stringify(resultTree[0]));
