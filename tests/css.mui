@@ -1,0 +1,13 @@
+html (
+  head (
+    style (
+      'body { width: 100vw; height: 100vh; background: #ccc; } .text {text-align:center; font-size: 200px;}'
+    )
+  )
+  body (
+    span (
+      'tipos de carinhas sao'
+      class: 'text'
+    )
+  )
+)
