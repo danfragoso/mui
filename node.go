@@ -10,6 +10,7 @@ type Node struct {
 	Name     string  `json:"name"`
 	Content  string  `json:"content"`
 	Props    []*Prop `json:"props"`
+	Parent   *Node   `json:"-"`
 	Children []*Node `json:"children"`
 }
 
@@ -26,6 +27,16 @@ func (node *Node) GetName() string {
 // SetName -
 func (node *Node) SetName(name string) {
 	node.Name = name
+}
+
+// GetParent -
+func (node *Node) GetParent() *Node {
+	return node.Parent
+}
+
+// SetParent -
+func (node *Node) SetParent(parent *Node) {
+	node.Parent = parent
 }
 
 // GetContent -
@@ -81,11 +92,16 @@ func (node *Node) SetChildren(children []*Node) {
 
 // AddChild -
 func (node *Node) AddChild(child *Node) {
+	child.SetParent(node)
 	node.Children = append(node.Children, child)
 }
 
 // AddChildren -
 func (node *Node) AddChildren(children ...*Node) {
+	for _, child := range children {
+		child.Parent = node
+	}
+
 	node.Children = append(node.Children, children...)
 }
 

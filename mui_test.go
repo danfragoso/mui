@@ -174,6 +174,46 @@ func TestParseChildren(t *testing.T) {
 	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
+func TestParseSameLevelChildren(t *testing.T) {
+	testName := "same_level_children"
+	testString := LoadTest(testName)
+
+	tree, err := Parse(testString)
+	if tree == nil {
+		t.Error("🤔 Parsed node is nil for some reason...")
+	}
+
+	if err != nil {
+		t.Error("❌ ", err)
+	}
+
+	if tree.GetName() != "root" {
+		t.Error("❌ Error, expected name root got: ", tree.GetName())
+	}
+
+	firstChild := tree.Children[0]
+
+	if firstChild.GetName() != "childOne" {
+		t.Error("❌ Error, expected name childOne got: ", firstChild.GetName())
+	}
+
+	if firstChild.GetContent() != "childContent_1" {
+		t.Error("❌ Error, expected chilContent_1 got: ", firstChild.GetContent())
+	}
+
+	secondChild := tree.Children[1]
+
+	if secondChild.GetName() != "childTwo" {
+		t.Error("❌ Error, expected name childTwo got: ", secondChild.GetName())
+	}
+
+	if secondChild.GetContent() != "childContent_2" {
+		t.Error("❌ Error, expected chilContent_2 got: ", secondChild.GetContent())
+	}
+
+	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
+}
+
 func LoadTest(testName string) string {
 	fileName := "tests/" + testName + ".mui"
 	fileData, err := ioutil.ReadFile(fileName)

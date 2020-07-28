@@ -49,6 +49,8 @@ func Parse(source string) (*Node, error) {
 			if currentToken.PreviousNonWhitespaceToken().Is(OpenParenthesis) {
 				currentNode.Content = currentToken.Value
 			}
+		} else if currentToken.Is(CloseParenthesis) {
+			currentNode = currentNode.Parent
 		}
 
 		currentToken = currentToken.NextToken()
