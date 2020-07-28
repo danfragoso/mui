@@ -1,0 +1,4 @@
+screen (
+    'Hi!'
+    theme: 'dark'
+)

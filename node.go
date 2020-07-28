@@ -38,6 +38,17 @@ func (node *Node) GetProps() []*Prop {
 	return node.Props
 }
 
+// GetProps -
+func (node *Node) GetProp(propName string) string {
+	for _, prop := range node.Props {
+		if prop.key == propName {
+			return prop.value
+		}
+	}
+
+	return "nil"
+}
+
 // SetProps -
 func (node *Node) SetProps(props []*Prop) {
 	node.Props = props

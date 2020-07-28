@@ -43,6 +43,31 @@ func TestParseNodeSpace(t *testing.T) {
 	}
 }
 
+func TestParseProp(t *testing.T) {
+	testString := LoadTest("prop")
+
+	tree, err := Parse(testString)
+	if tree == nil {
+		t.Error("🤔 Parsed node is nil for some reason...")
+	}
+
+	if err != nil {
+		t.Error("❌ ", err)
+	}
+
+	if tree.GetName() != "screen" {
+		t.Error("❌ Error, expected name screen got: ", tree.GetName())
+	}
+
+	if tree.GetContent() != "Hi!" {
+		t.Error("❌ Error, expected Hi! got: ", tree.GetContent())
+	}
+
+	if tree.GetProp("theme") != "dark" {
+		t.Error("❌ Error, expected 'dark' got: ", tree.GetProp("theme"))
+	}
+}
+
 func LoadTest(testName string) string {
 	fileName := "tests/" + testName + ".mui"
 	fileData, err := ioutil.ReadFile(fileName)

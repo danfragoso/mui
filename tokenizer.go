@@ -1,7 +1,7 @@
 package mui
 
 // Tokenize -
-func Tokenize(raw string) (*TokenList, error) {
+func Tokenize(raw string) (*Token, error) {
 	source := createSource(raw)
 	tokenList := CreateTokenList()
 
@@ -44,7 +44,25 @@ func Tokenize(raw string) (*TokenList, error) {
 		}
 	}
 
-	return tokenList, nil
+	return chainTokens(tokenList), nil
+}
+
+func chainTokens(tokenList *TokenList) *Token {
+	var fstToken *Token
+
+	for idx, token := range tokenList.Tokens {
+		if idx == 0 {
+			fstToken = token
+		} else {
+			token.previousToken = tokenList.Tokens[idx-1]
+		}
+
+		if idx+1 < len(tokenList.Tokens) {
+			token.nextToken = tokenList.Tokens[idx+1]
+		}
+	}
+
+	return fstToken
 }
 
 func createWhitespaceToken(ch rune, idx int) *Token {

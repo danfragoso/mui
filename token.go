@@ -25,6 +25,9 @@ type Token struct {
 	TokenType TokenType
 	Value     string
 	Idx       int
+
+	nextToken     *Token
+	previousToken *Token
 }
 
 func (token *Token) Is(tokenType TokenType) bool {
@@ -33,6 +36,46 @@ func (token *Token) Is(tokenType TokenType) bool {
 
 func (token *Token) IsWhiteSpace() bool {
 	return token.TokenType == NewLine || token.TokenType == Tab || token.TokenType == Space
+}
+
+func (token *Token) HasNextToken() bool {
+	return token.nextToken != nil
+}
+
+func (token *Token) HasPreviousToken() bool {
+	return token.previousToken != nil
+}
+
+func (token *Token) NextNonWhitespaceToken() *Token {
+	cToken := token.nextToken
+
+	for cToken.HasNextToken() {
+		if !cToken.IsWhiteSpace() {
+			return cToken
+		}
+
+		cToken = cToken.nextToken
+	}
+
+	return nil
+}
+
+func (token *Token) PreviousNonWhitespaceToken() *Token {
+	cToken := token.previousToken
+
+	for cToken.HasPreviousToken() {
+		if !cToken.IsWhiteSpace() {
+			return cToken
+		}
+
+		cToken = cToken.previousToken
+	}
+
+	return nil
+}
+
+func (token *Token) NextToken() *Token {
+	return token.nextToken
 }
 
 func (token *Token) IsExpectedAfter(expected *Token) bool {
@@ -80,58 +123,4 @@ func (tokenList *TokenList) HasToken() bool {
 	}
 
 	return true
-}
-
-func (tokenList *TokenList) PreviousToken() *Token {
-	return tokenList.Tokens[tokenList.tokenIdx-1]
-}
-
-func (tokenList *TokenList) NextToken() *Token {
-	return tokenList.Tokens[tokenList.tokenIdx+1]
-}
-
-func (tokenList *TokenList) PreviousNonWhitespaceToken() *Token {
-	for idx := tokenList.tokenIdx - 1; idx < tokenList.tokenListLen; idx-- {
-		if !tokenList.Tokens[idx].IsWhiteSpace() {
-			return tokenList.Tokens[idx]
-		}
-	}
-
-	return nil
-}
-
-func (tokenList *TokenList) NextNonWhitespaceToken() *Token {
-	for idx := tokenList.tokenIdx + 1; idx < tokenList.tokenListLen; idx++ {
-		if !tokenList.Tokens[idx].IsWhiteSpace() {
-			return tokenList.Tokens[idx]
-		}
-	}
-
-	return nil
-}
-
-func (tokenList *TokenList) CurrentToken() *Token {
-	return tokenList.Tokens[tokenList.tokenIdx]
-}
-
-func (tokenList *TokenList) Advance() {
-	tokenList.tokenIdx++
-}
-
-func (tokenList *TokenList) AdvanceUntilNonWhitespace() {
-	tokenList.tokenIdx++
-
-	for !tokenList.Tokens[tokenList.tokenIdx].IsWhiteSpace() {
-		tokenList.tokenIdx++
-	}
-}
-
-func (tokenList *TokenList) AdvanceUntilLastWhitespace() {
-	tokenList.tokenIdx++
-
-	for !tokenList.Tokens[tokenList.tokenIdx].IsWhiteSpace() {
-		tokenList.tokenIdx++
-	}
-
-	tokenList.tokenIdx--
 }

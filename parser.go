@@ -6,38 +6,46 @@ import (
 
 // Parse -
 func Parse(source string) (*Node, error) {
-	tokenList, err := Tokenize(source)
-	var root *Node
-	var currentNode *Node
-
+	firstToken, err := Tokenize(source)
 	if err != nil {
 		return nil, err
 	}
 
-	for tokenList.HasToken() {
-		if tokenList.CurrentToken().Is(Identifier) {
-			if tokenList.NextNonWhitespaceToken().
-				IsExpectedAfter(tokenList.CurrentToken()) {
+	currentToken := firstToken
 
-				if tokenList.NextNonWhitespaceToken().Is(OpenParenthesis) {
-					currentNode = NewNode(tokenList.CurrentToken().Value)
+	var root *Node
+	var currentNode *Node
+
+	for currentToken != nil {
+		if currentToken.Is(Identifier) {
+			if currentToken.NextNonWhitespaceToken().IsExpectedAfter(currentToken) {
+				if currentToken.NextNonWhitespaceToken().Is(OpenParenthesis) {
+					currentNode = NewNode(currentToken.Value)
 
 					if root == nil {
 						root = currentNode
 					}
 				} else {
-					//@TODO: Create new prop
+					if currentToken.NextNonWhitespaceToken().NextNonWhitespaceToken().
+						Is(String) {
+						currentNode.AddProp(
+							NewProp(
+								currentToken.Value,
+								currentToken.NextNonWhitespaceToken().NextNonWhitespaceToken().Value,
+							),
+						)
+					}
 				}
 			} else {
 				return nil, errors.New("Unexpected token")
 			}
-		} else if tokenList.CurrentToken().Is(String) {
-			if tokenList.PreviousNonWhitespaceToken().Is(OpenParenthesis) {
-				currentNode.Content = tokenList.CurrentToken().Value
+		} else if currentToken.Is(String) {
+			if currentToken.PreviousNonWhitespaceToken().Is(OpenParenthesis) {
+				currentNode.Content = currentToken.Value
 			}
 		}
 
-		tokenList.Advance()
+		currentToken = currentToken.NextToken()
 	}
 
 	return root, nil
