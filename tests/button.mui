@@ -1,8 +1,0 @@
-button (
-	ref: 'saveButton'
-	background: '#ccc'
-	color: '#000'
-
-	icon (srcPath: 'icons/floppy.svg')
-	label ('SAVE')
-)
