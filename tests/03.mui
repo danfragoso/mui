@@ -1,7 +1,0 @@
-frame (
-  'frrr'
-
-  orientation: 'vertical'
-
-  oof ()
-)

@@ -2,73 +2,73 @@ package mui
 
 // Node - MUI Lang node represantation
 type Node struct {
-	name     string
-	content  string
-	props    []*Prop
-	children []*Node
+	Name     string
+	Content  string
+	Props    []*Prop
+	Children []*Node
 }
 
 // NewNode -
 func NewNode(name string) *Node {
-	return &Node{name: name}
+	return &Node{Name: name}
 }
 
 // GetName -
 func (node *Node) GetName() string {
-	return node.name
+	return node.Name
 }
 
 // SetName -
 func (node *Node) SetName(name string) {
-	node.name = name
+	node.Name = name
 }
 
 // GetContent -
 func (node *Node) GetContent() string {
-	return node.content
+	return node.Content
 }
 
 // SetContent -
 func (node *Node) SetContent(content string) {
-	node.content = content
+	node.Content = content
 }
 
 // GetProps -
 func (node *Node) GetProps() []*Prop {
-	return node.props
+	return node.Props
 }
 
 // SetProps -
 func (node *Node) SetProps(props []*Prop) {
-	node.props = props
+	node.Props = props
 }
 
 // AddProp -
 func (node *Node) AddProp(prop *Prop) {
-	node.props = append(node.props, prop)
+	node.Props = append(node.Props, prop)
 }
 
 // AddProps -
 func (node *Node) AddProps(props ...*Prop) {
-	node.props = append(node.props, props...)
+	node.Props = append(node.Props, props...)
 }
 
 // GetChildren -
 func (node *Node) GetChildren() []*Node {
-	return node.children
+	return node.Children
 }
 
 // SetChildren -
 func (node *Node) SetChildren(children []*Node) {
-	node.children = children
+	node.Children = children
 }
 
 // AddChild -
 func (node *Node) AddChild(child *Node) {
-	node.children = append(node.children, child)
+	node.Children = append(node.Children, child)
 }
 
 // AddChildren -
 func (node *Node) AddChildren(children ...*Node) {
-	node.children = append(node.children, children...)
+	node.Children = append(node.Children, children...)
 }
