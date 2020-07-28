@@ -18,7 +18,7 @@ func TestParseNode(t *testing.T) {
 	}
 
 	if tree.GetContent() != "Hello World" {
-		t.Error("❌ Error, expected Hellow World got: ", tree.GetContent())
+		t.Error("❌ Error, expected Hello World got: ", tree.GetContent())
 	}
 }
 
@@ -34,13 +34,12 @@ func TestParseNodeSpace(t *testing.T) {
 		t.Error("❌ ", err)
 	}
 
-	t.Log(tree)
 	if tree.GetName() != "frame" {
 		t.Error("❌ Error, expected name frame got: ", tree.GetName())
 	}
 
 	if tree.GetContent() != "Hello World" {
-		t.Error("❌ Error, expected Hellow World got: ", tree.GetContent())
+		t.Error("❌ Error, expected Hello World got: ", tree.GetContent())
 	}
 }
 

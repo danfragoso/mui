@@ -75,7 +75,7 @@ func createPunctToken(ch rune, idx int) *Token {
 	case ':':
 		token.TokenType = Colon
 	case '(':
-		token.TokenType = OpenParanthesis
+		token.TokenType = OpenParenthesis
 	case ')':
 		token.TokenType = CloseParenthesis
 	case ',':

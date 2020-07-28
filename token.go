@@ -11,7 +11,7 @@ const EOF = rune(0)
 
 const (
 	Identifier = iota
-	OpenParanthesis
+	OpenParenthesis
 	CloseParenthesis
 	String
 	Colon
@@ -33,6 +33,19 @@ func (token *Token) Is(tokenType TokenType) bool {
 
 func (token *Token) IsWhiteSpace() bool {
 	return token.TokenType == NewLine || token.TokenType == Tab || token.TokenType == Space
+}
+
+func (token *Token) IsExpectedAfter(expected *Token) bool {
+	switch expected.TokenType {
+	case Identifier:
+		if token.TokenType == Colon || token.TokenType == OpenParenthesis {
+			return true
+		}
+
+		break
+	}
+
+	return false
 }
 
 func (token *Token) AsJSON() string {
@@ -75,6 +88,26 @@ func (tokenList *TokenList) PreviousToken() *Token {
 
 func (tokenList *TokenList) NextToken() *Token {
 	return tokenList.Tokens[tokenList.tokenIdx+1]
+}
+
+func (tokenList *TokenList) PreviousNonWhitespaceToken() *Token {
+	for idx := tokenList.tokenIdx - 1; idx < tokenList.tokenListLen; idx-- {
+		if !tokenList.Tokens[idx].IsWhiteSpace() {
+			return tokenList.Tokens[idx]
+		}
+	}
+
+	return nil
+}
+
+func (tokenList *TokenList) NextNonWhitespaceToken() *Token {
+	for idx := tokenList.tokenIdx + 1; idx < tokenList.tokenListLen; idx++ {
+		if !tokenList.Tokens[idx].IsWhiteSpace() {
+			return tokenList.Tokens[idx]
+		}
+	}
+
+	return nil
 }
 
 func (tokenList *TokenList) CurrentToken() *Token {
