@@ -1,11 +1,16 @@
 package mui
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 // Node - MUI Lang node represantation
 type Node struct {
-	Name     string
-	Content  string
-	Props    []*Prop
-	Children []*Node
+	Name     string  `json:"name"`
+	Content  string  `json:"content"`
+	Props    []*Prop `json:"props"`
+	Children []*Node `json:"children"`
 }
 
 // NewNode -
@@ -41,8 +46,8 @@ func (node *Node) GetProps() []*Prop {
 // GetProps -
 func (node *Node) GetProp(propName string) string {
 	for _, prop := range node.Props {
-		if prop.key == propName {
-			return prop.value
+		if prop.Key == propName {
+			return prop.Value
 		}
 	}
 
@@ -82,4 +87,14 @@ func (node *Node) AddChild(child *Node) {
 // AddChildren -
 func (node *Node) AddChildren(children ...*Node) {
 	node.Children = append(node.Children, children...)
+}
+
+func (node *Node) AsJSON() string {
+	res, err := json.MarshalIndent(node, "", "  ")
+	if err != nil {
+		fmt.Println(err)
+		return "{}"
+	}
+
+	return string(res)
 }

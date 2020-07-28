@@ -20,7 +20,13 @@ func Parse(source string) (*Node, error) {
 		if currentToken.Is(Identifier) {
 			if currentToken.NextNonWhitespaceToken().IsExpectedAfter(currentToken) {
 				if currentToken.NextNonWhitespaceToken().Is(OpenParenthesis) {
-					currentNode = NewNode(currentToken.Value)
+					createdNode := NewNode(currentToken.Value)
+
+					if currentNode != nil {
+						currentNode.AddChild(createdNode)
+					}
+
+					currentNode = createdNode
 
 					if root == nil {
 						root = currentNode

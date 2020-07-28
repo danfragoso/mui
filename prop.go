@@ -2,28 +2,28 @@ package mui
 
 //Prop - MUI Lang generic prop
 type Prop struct {
-	key   string
-	value string
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 //SetKey -
 func (prop *Prop) SetKey(key string) {
-	prop.key = key
+	prop.Key = key
 }
 
 //GetKey -
 func (prop *Prop) GetKey() string {
-	return prop.key
+	return prop.Key
 }
 
 //SetValue -
 func (prop *Prop) SetValue(value string) {
-	prop.value = value
+	prop.Value = value
 }
 
 //GetValue -
 func (prop *Prop) GetValue() string {
-	return prop.value
+	return prop.Value
 }
 
 //NewProp -

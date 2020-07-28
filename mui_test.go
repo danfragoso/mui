@@ -25,6 +25,7 @@ func TestParseNode(t *testing.T) {
 		t.Error("❌ Error, expected Hello World got: ", tree.GetContent())
 	}
 
+	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
 func TestParseNodeSpace(t *testing.T) {
@@ -48,6 +49,7 @@ func TestParseNodeSpace(t *testing.T) {
 		t.Error("❌ Error, expected Hello World got: ", tree.GetContent())
 	}
 
+	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
 func TestParseProp(t *testing.T) {
@@ -75,6 +77,7 @@ func TestParseProp(t *testing.T) {
 		t.Error("❌ Error, expected 'dark' got: ", tree.GetProp("theme"))
 	}
 
+	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
 func TestParseMultiprop(t *testing.T) {
@@ -106,6 +109,7 @@ func TestParseMultiprop(t *testing.T) {
 		t.Error("❌ Error, expected 'valueTwo' got: ", tree.GetProp("keyTwo"))
 	}
 
+	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
 func TestParseMultipropSpace(t *testing.T) {
@@ -137,6 +141,37 @@ func TestParseMultipropSpace(t *testing.T) {
 		t.Error("❌ Error, expected 'valueTwo' got: ", tree.GetProp("keyTwo"))
 	}
 
+	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
+}
+
+func TestParseChildren(t *testing.T) {
+	testName := "children"
+	testString := LoadTest(testName)
+
+	tree, err := Parse(testString)
+	if tree == nil {
+		t.Error("🤔 Parsed node is nil for some reason...")
+	}
+
+	if err != nil {
+		t.Error("❌ ", err)
+	}
+
+	if tree.GetName() != "test" {
+		t.Error("❌ Error, expected name test got: ", tree.GetName())
+	}
+
+	firstChild := tree.Children[0]
+
+	if firstChild.GetName() != "test" {
+		t.Error("❌ Error, expected name test got: ", firstChild.GetName())
+	}
+
+	if firstChild.GetContent() != "test" {
+		t.Error("❌ Error, expected test got: ", firstChild.GetContent())
+	}
+
+	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
 func LoadTest(testName string) string {
