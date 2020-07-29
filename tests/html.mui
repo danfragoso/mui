@@ -1,0 +1,20 @@
+html (
+    head (
+        title ('MUI Hello')
+        meta (name: 'viewport', content: 'initial-scale=1')
+    ) body (
+        p ('Hi, MUI html working!') hr () ol (
+            li ('MUI', style: 'color: red;')
+            li ('MUI', style: 'color: green;')
+            li ('MUI', style: 'color: blue;')
+        ) script ('
+            const lis = Array.from(document.querySelectorAll("li"));
+
+            lis.forEach(li => {
+                li.addEventListener("click", ev => {
+                    li.style.color = "orange";
+                });
+            });
+        ')
+    )
+)

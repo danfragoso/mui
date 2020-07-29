@@ -214,6 +214,25 @@ func TestParseSameLevelChildren(t *testing.T) {
 	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
+func TestEmitHtml(t *testing.T) {
+	testName := "html"
+	testString := LoadTest(testName)
+
+	tree, err := Parse(testString)
+	if err != nil {
+		t.Error(err)
+	}
+
+	html, err := EmitHTML(tree)
+	if err != nil {
+		t.Error(err)
+	}
+
+	fmt.Println(html)
+
+	//fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
+}
+
 func LoadTest(testName string) string {
 	fileName := "tests/" + testName + ".mui"
 	fileData, err := ioutil.ReadFile(fileName)
