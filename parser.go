@@ -18,6 +18,11 @@ func Parse(source string) (*Node, error) {
 
 	for currentToken != nil {
 		if currentToken.Is(Identifier) {
+
+			if currentToken.NextNonWhitespaceToken() == nil {
+				return nil, missingAfterError("token", "identifier", "')' or ':'", currentToken.Idx)
+			}
+
 			if currentToken.NextNonWhitespaceToken().IsExpectedAfter(currentToken) {
 				if currentToken.NextNonWhitespaceToken().Is(OpenParenthesis) {
 					createdNode := NewNode(currentToken.Value)
@@ -37,7 +42,8 @@ func Parse(source string) (*Node, error) {
 						currentNode.AddProp(
 							NewProp(
 								currentToken.Value,
-								currentToken.NextNonWhitespaceToken().NextNonWhitespaceToken().Value,
+								currentToken.NextNonWhitespaceToken().
+									NextNonWhitespaceToken().Value,
 							),
 						)
 					}

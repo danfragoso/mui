@@ -1,0 +1,4 @@
+node('one'
+    nodeTwo('two', prop: 'val'
+    nodeThree('three', key: 'val')
+)

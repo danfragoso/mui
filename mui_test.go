@@ -214,21 +214,38 @@ func TestParseSameLevelChildren(t *testing.T) {
 	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
-func TestEmitHtml(t *testing.T) {
-	testName := "html"
+func TestEmitMissingParenthesis(t *testing.T) {
+	//@ TODO: ARRUMA ESSE BAGULHO AQUI DEPOIS
+	testName := "missing_parenthesis"
 	testString := LoadTest(testName)
 
 	tree, err := Parse(testString)
-	if err != nil {
-		t.Error(err)
+	if tree != nil {
+		t.Error("🤔 Parsed node should be nil but it isn't...")
 	}
 
-	html, err := EmitHTML(tree)
-	if err != nil {
-		t.Error(err)
+	fmt.Println(err)
+	if err == nil {
+		t.Error("❌ ", err)
 	}
 
-	fmt.Println(html)
+	//fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
+}
+
+func TestEmitMissingParenthesisContent(t *testing.T) {
+	//@ TODO: ARRUMA ESSE BAGULHO AQUI DEPOIS
+	testName := "missing_parenthesis_content"
+	testString := LoadTest(testName)
+
+	tree, err := Parse(testString)
+	if tree != nil {
+		t.Error("🤔 Parsed node should be nil but it isn't...")
+	}
+
+	fmt.Println(err)
+	if err == nil {
+		t.Error("❌ ", err)
+	}
 
 	//fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
