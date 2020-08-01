@@ -3,269 +3,124 @@ package mui
 import (
 	"fmt"
 	"io/ioutil"
-	"strconv"
-	"strings"
 	"testing"
 )
 
-func TestParseNode(t *testing.T) {
-	testName := "node"
-	testString := LoadTest(testName)
-
-	tree, err := Parse(testString)
-	if err != nil {
-		t.Error(err)
-	}
-
-	if tree.GetName() != "frame" {
-		t.Error("❌ Error, expected name frame got: ", tree.GetName())
-	}
-
-	if tree.GetContent() != "Hello World" {
-		t.Error("❌ Error, expected Hello World got: ", tree.GetContent())
-	}
-
-	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
+type UnitTest struct {
+	name            string
+	filename        string
+	description     string
+	testingFunction func(*UnitTest) error
 }
 
-func TestParseNodeSpace(t *testing.T) {
-	testName := "node_space"
-	testString := LoadTest(testName)
-
-	tree, err := Parse(testString)
-	if tree == nil {
-		t.Error("🤔 Parsed node is nil for some reason...")
-	}
-
-	if err != nil {
-		t.Error("❌ ", err)
-	}
-
-	if tree.GetName() != "frame" {
-		t.Error("❌ Error, expected name frame got: ", tree.GetName())
-	}
-
-	if tree.GetContent() != "Hello World" {
-		t.Error("❌ Error, expected Hello World got: ", tree.GetContent())
-	}
-
-	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
+func (test *UnitTest) Run() error {
+	return test.testingFunction(test)
 }
 
-func TestParseProp(t *testing.T) {
-	testName := "prop"
-	testString := LoadTest(testName)
+func (test *UnitTest) Fail(err error, t *testing.T) {
+	fmt.Println("\u001b[41;1m FAIL \u001b[0m " + test.name)
+	fmt.Printf("\u001b[31mError:\u001b[0m " + err.Error() + "\n")
+	fmt.Println(test.description)
 
-	tree, err := Parse(testString)
-	if tree == nil {
-		t.Error("🤔 Parsed node is nil for some reason...")
-	}
-
-	if err != nil {
-		t.Error("❌ ", err)
-	}
-
-	if tree.GetName() != "screen" {
-		t.Error("❌ Error, expected name screen got: ", tree.GetName())
-	}
-
-	if tree.GetContent() != "Hi!" {
-		t.Error("❌ Error, expected Hi! got: ", tree.GetContent())
-	}
-
-	if tree.GetProp("theme") != "dark" {
-		t.Error("❌ Error, expected 'dark' got: ", tree.GetProp("theme"))
-	}
-
-	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
+	fmt.Print("\n")
+	t.Error(err)
 }
 
-func TestParseMultiprop(t *testing.T) {
-	testName := "multiprop"
-	testString := LoadTest(testName)
-
-	tree, err := Parse(testString)
-	if tree == nil {
-		t.Error("🤔 Parsed node is nil for some reason...")
-	}
-
-	if err != nil {
-		t.Error("❌ ", err)
-	}
-
-	if tree.GetName() != "test" {
-		t.Error("❌ Error, expected name test got: ", tree.GetName())
-	}
-
-	if tree.GetContent() != "test!" {
-		t.Error("❌ Error, expected test! got: ", tree.GetContent())
-	}
-
-	if tree.GetProp("keyOne") != "valueOne" {
-		t.Error("❌ Error, expected 'valueOne' got: ", tree.GetProp("keyOne"))
-	}
-
-	if tree.GetProp("keyTwo") != "valueTwo" {
-		t.Error("❌ Error, expected 'valueTwo' got: ", tree.GetProp("keyTwo"))
-	}
-
-	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
+func (test *UnitTest) Pass() {
+	fmt.Println("\u001b[42;1m PASS \u001b[0m " + test.name)
+	fmt.Println(test.description)
+	fmt.Println("")
 }
 
-func TestParseMultipropSpace(t *testing.T) {
-	testName := "multiprop_space"
-	testString := LoadTest(testName)
+func TestParser(t *testing.T) {
+	fmt.Print("Testing MUI parser...\n\n")
+	var parserTests []*UnitTest
 
-	tree, err := Parse(testString)
-	if tree == nil {
-		t.Error("🤔 Parsed node is nil for some reason...")
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Simple node",
+		filename:        "tests/node.mui",
+		description:     "Simplest node example, with content",
+		testingFunction: parseNode,
+	})
+
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Simple node space",
+		filename:        "tests/node_space.mui",
+		description:     "Simplest node example, with content, whitespace, tab and newline",
+		testingFunction: parseNodeSpace,
+	})
+
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Props",
+		filename:        "tests/prop.mui",
+		description:     "Node with content, whitespace and props",
+		testingFunction: parseProp,
+	})
+
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Multiple props",
+		filename:        "tests/multiprop.mui",
+		description:     "Node with content, whitespace and props",
+		testingFunction: parseMultiProp,
+	})
+
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Multiple props and spaces",
+		filename:        "tests/multiprop_space.mui",
+		description:     "Node with content, whitespace and props separated by space",
+		testingFunction: parseMultiPropSpace,
+	})
+
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Single child",
+		filename:        "tests/children.mui",
+		description:     "Node with no content, whitespace and a single child",
+		testingFunction: parseChildren,
+	})
+
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Same level children",
+		filename:        "tests/same_level_children.mui",
+		description:     "Node with no content, whitespace and children",
+		testingFunction: parseSameLevelChildren,
+	})
+
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Missing paranthesis",
+		filename:        "tests/missing_parenthesis.mui",
+		description:     "The parser should return an error",
+		testingFunction: parseMissingParenthesis,
+	})
+
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Missing paranthesis after content",
+		filename:        "tests/missing_parenthesis_content.mui",
+		description:     "The parser should return an error",
+		testingFunction: parseMissingParenthesisContent,
+	})
+
+	for _, test := range parserTests {
+		if err := test.Run(); err != nil {
+			test.Fail(err, t)
+		} else {
+			test.Pass()
+		}
 	}
-
-	if err != nil {
-		t.Error("❌ ", err)
-	}
-
-	if tree.GetName() != "test" {
-		t.Error("❌ Error, expected name test got: ", tree.GetName())
-	}
-
-	if tree.GetContent() != "test!" {
-		t.Error("❌ Error, expected test! got: ", tree.GetContent())
-	}
-
-	if tree.GetProp("keyOne") != "valueOne" {
-		t.Error("❌ Error, expected 'valueOne' got: ", tree.GetProp("keyOne"))
-	}
-
-	if tree.GetProp("keyTwo") != "valueTwo" {
-		t.Error("❌ Error, expected 'valueTwo' got: ", tree.GetProp("keyTwo"))
-	}
-
-	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
 }
 
-func TestParseChildren(t *testing.T) {
-	testName := "children"
-	testString := LoadTest(testName)
-
-	tree, err := Parse(testString)
-	if tree == nil {
-		t.Error("🤔 Parsed node is nil for some reason...")
-	}
-
-	if err != nil {
-		t.Error("❌ ", err)
-	}
-
-	if tree.GetName() != "test" {
-		t.Error("❌ Error, expected name test got: ", tree.GetName())
-	}
-
-	firstChild := tree.Children[0]
-
-	if firstChild.GetName() != "test" {
-		t.Error("❌ Error, expected name test got: ", firstChild.GetName())
-	}
-
-	if firstChild.GetContent() != "test" {
-		t.Error("❌ Error, expected test got: ", firstChild.GetContent())
-	}
-
-	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
-}
-
-func TestParseSameLevelChildren(t *testing.T) {
-	testName := "same_level_children"
-	testString := LoadTest(testName)
-
-	tree, err := Parse(testString)
-	if tree == nil {
-		t.Error("🤔 Parsed node is nil for some reason...")
-	}
-
-	if err != nil {
-		t.Error("❌ ", err)
-	}
-
-	if tree.GetName() != "root" {
-		t.Error("❌ Error, expected name root got: ", tree.GetName())
-	}
-
-	firstChild := tree.Children[0]
-
-	if firstChild.GetName() != "childOne" {
-		t.Error("❌ Error, expected name childOne got: ", firstChild.GetName())
-	}
-
-	if firstChild.GetContent() != "childContent_1" {
-		t.Error("❌ Error, expected chilContent_1 got: ", firstChild.GetContent())
-	}
-
-	secondChild := tree.Children[1]
-
-	if secondChild.GetName() != "childTwo" {
-		t.Error("❌ Error, expected name childTwo got: ", secondChild.GetName())
-	}
-
-	if secondChild.GetContent() != "childContent_2" {
-		t.Error("❌ Error, expected chilContent_2 got: ", secondChild.GetContent())
-	}
-
-	fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
-}
-
-func TestEmitMissingParenthesis(t *testing.T) {
-	//@ TODO: ARRUMA ESSE BAGULHO AQUI DEPOIS
-	testName := "missing_parenthesis"
-	testString := LoadTest(testName)
-
-	tree, err := Parse(testString)
-	if tree != nil {
-		t.Error("🤔 Parsed node should be nil but it isn't...")
-	}
-
-	fmt.Println(err)
-	if err == nil {
-		t.Error("❌ ", err)
-	}
-
-	//fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
-}
-
-func TestEmitMissingParenthesisContent(t *testing.T) {
-	//@ TODO: ARRUMA ESSE BAGULHO AQUI DEPOIS
-	testName := "missing_parenthesis_content"
-	testString := LoadTest(testName)
-
-	tree, err := Parse(testString)
-	if tree != nil {
-		t.Error("🤔 Parsed node should be nil but it isn't...")
-	}
-
-	fmt.Println(err)
-	if err == nil {
-		t.Error("❌ ", err)
-	}
-
-	//fmt.Println("\033[36m" + tree.AsJSON() + "\033[0m")
-}
-
-func LoadTest(testName string) string {
-	fileName := "tests/" + testName + ".mui"
+func LoadTest(fileName string) string {
 	fileData, err := ioutil.ReadFile(fileName)
 
 	if err != nil {
-		panic("⚠️ Can't load test " + testName)
+		panic("⚠️ Can't read file " + fileName)
 	}
 
 	fileString := string(fileData)
 
-	fmt.Println("🔥 \033[31;1;4m" + testName + ".mui\033[0m")
-
-	lines := strings.Split(fileString, "\n")
-	for idx, line := range lines {
-		fmt.Println("\033[36m  " + strconv.Itoa(idx+1) + "|  " + line + "\033[0m")
-	}
-	fmt.Println(" ")
+	// lines := strings.Split(fileString, "\n")
+	// for idx, line := range lines {
+	// 	fmt.Println("\033[36m  " + strconv.Itoa(idx+1) + "|  " + line + "\033[0m")
+	// }
+	// fmt.Println(" ")
 	return fileString
 }

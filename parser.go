@@ -55,6 +55,10 @@ func parseCloseParenthesis(s *ParserState) (*Node, error) {
 }
 
 func parseString(s *ParserState) (*Node, error) {
+	if n, e := catchStringErrors(s); parserShouldReturn(n, e) {
+		return n, e
+	}
+
 	if s.currentToken.PreviousNonWhitespaceToken().Is(OpenParenthesis) {
 		s.currentNode.Content = s.currentToken.Value
 	}
@@ -102,5 +106,12 @@ func catchIdentifierErrors(s *ParserState) (*Node, error) {
 		return nil, errors.New("Unexpected token")
 	}
 
+	return nil, nil
+}
+
+func catchStringErrors(s *ParserState) (*Node, error) {
+	if s.currentToken.NextNonWhitespaceToken() == nil {
+		return nil, errors.New("Unexpected end of input")
+	}
 	return nil, nil
 }

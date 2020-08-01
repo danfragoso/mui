@@ -39,6 +39,10 @@ func (token *Token) IsWhiteSpace() bool {
 }
 
 func (token *Token) HasNextToken() bool {
+	if token == nil {
+		return false
+	}
+
 	return token.nextToken != nil
 }
 
