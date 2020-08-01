@@ -4,63 +4,103 @@ import (
 	"errors"
 )
 
+//ParserState - Holds the current state of the parser across all parsing contexts
+type ParserState struct {
+	rootNode    *Node
+	currentNode *Node
+
+	currentToken *Token
+}
+
 // Parse -
 func Parse(source string) (*Node, error) {
-	firstToken, err := Tokenize(source)
-	if err != nil {
-		return nil, err
+	var e error
+
+	s := &ParserState{}
+	s.currentToken, e = Tokenize(source)
+	if e != nil {
+		return nil, e
 	}
 
-	currentToken := firstToken
+	for s.currentToken != nil {
+		var n *Node
 
-	var root *Node
-	var currentNode *Node
-
-	for currentToken != nil {
-		if currentToken.Is(Identifier) {
-
-			if currentToken.NextNonWhitespaceToken() == nil {
-				return nil, missingAfterError("token", "identifier", "')' or ':'", currentToken.Idx)
-			}
-
-			if currentToken.NextNonWhitespaceToken().IsExpectedAfter(currentToken) {
-				if currentToken.NextNonWhitespaceToken().Is(OpenParenthesis) {
-					createdNode := NewNode(currentToken.Value)
-
-					if currentNode != nil {
-						currentNode.AddChild(createdNode)
-					}
-
-					currentNode = createdNode
-
-					if root == nil {
-						root = currentNode
-					}
-				} else {
-					if currentToken.NextNonWhitespaceToken().NextNonWhitespaceToken().
-						Is(String) {
-						currentNode.AddProp(
-							NewProp(
-								currentToken.Value,
-								currentToken.NextNonWhitespaceToken().
-									NextNonWhitespaceToken().Value,
-							),
-						)
-					}
-				}
-			} else {
-				return nil, errors.New("Unexpected token")
-			}
-		} else if currentToken.Is(String) {
-			if currentToken.PreviousNonWhitespaceToken().Is(OpenParenthesis) {
-				currentNode.Content = currentToken.Value
-			}
-		} else if currentToken.Is(CloseParenthesis) {
-			currentNode = currentNode.Parent
+		switch s.currentToken.TokenType {
+		case Identifier:
+			n, e = parseIdentifier(s)
+		case String:
+			n, e = parseString(s)
+		case CloseParenthesis:
+			n, e = parseCloseParenthesis(s)
 		}
 
-		currentToken = currentToken.NextToken()
+		if parserShouldReturn(n, e) {
+			return n, e
+		}
+
+		s.currentToken = s.currentToken.NextToken()
 	}
 
-	return root, nil
+	return s.rootNode, nil
+}
+
+func parserShouldReturn(n *Node, e error) bool {
+	return n != nil || e != nil
+}
+
+func parseCloseParenthesis(s *ParserState) (*Node, error) {
+	s.currentNode = s.currentNode.Parent
+
+	return nil, nil
+}
+
+func parseString(s *ParserState) (*Node, error) {
+	if s.currentToken.PreviousNonWhitespaceToken().Is(OpenParenthesis) {
+		s.currentNode.Content = s.currentToken.Value
+	}
+
+	return nil, nil
+}
+
+func parseIdentifier(s *ParserState) (*Node, error) {
+	if n, e := catchIdentifierErrors(s); parserShouldReturn(n, e) {
+		return n, e
+	}
+
+	if s.currentToken.NextNonWhitespaceToken().Is(OpenParenthesis) {
+		createdNode := NewNode(s.currentToken.Value)
+
+		if s.currentNode != nil {
+			s.currentNode.AddChild(createdNode)
+		}
+
+		s.currentNode = createdNode
+
+		if s.rootNode == nil {
+			s.rootNode = s.currentNode
+		}
+	} else {
+		if s.currentToken.NextNonWhitespaceToken().NextNonWhitespaceToken().Is(String) {
+			s.currentNode.AddProp(
+				NewProp(
+					s.currentToken.Value,
+					s.currentToken.NextNonWhitespaceToken().NextNonWhitespaceToken().Value,
+				),
+			)
+		}
+	}
+
+	return nil, nil
+}
+
+func catchIdentifierErrors(s *ParserState) (*Node, error) {
+	if s.currentToken.NextNonWhitespaceToken() == nil {
+		return nil, missingAfterError("token", "identifier", "')' or ':'", s.currentToken.Idx)
+	}
+
+	if !s.currentToken.NextNonWhitespaceToken().IsExpectedAfter(s.currentToken) {
+		return nil, errors.New("Unexpected token")
+	}
+
+	return nil, nil
 }
