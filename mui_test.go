@@ -2,7 +2,6 @@ package mui
 
 import (
 	"fmt"
-	"io/ioutil"
 	"testing"
 )
 
@@ -80,21 +79,4 @@ func TestParser(t *testing.T) {
 			test.Pass()
 		}
 	}
-}
-
-func LoadTest(fileName string) string {
-	fileData, err := ioutil.ReadFile(fileName)
-
-	if err != nil {
-		panic("⚠️ Can't read file " + fileName)
-	}
-
-	fileString := string(fileData)
-
-	// lines := strings.Split(fileString, "\n")
-	// for idx, line := range lines {
-	// 	fmt.Println("\033[36m  " + strconv.Itoa(idx+1) + "|  " + line + "\033[0m")
-	// }
-	// fmt.Println(" ")
-	return fileString
 }

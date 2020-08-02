@@ -2,6 +2,7 @@ package mui
 
 import (
 	"fmt"
+	"io/ioutil"
 	"testing"
 )
 
@@ -29,4 +30,21 @@ func (test *UnitTest) Pass() {
 	fmt.Println("\u001b[30m\u001b[42;1m PASS \u001b[0m " + test.name)
 	fmt.Println("[" + test.description + "]")
 	fmt.Println("")
+}
+
+func LoadTest(fileName string) string {
+	fileData, err := ioutil.ReadFile(fileName)
+
+	if err != nil {
+		panic("⚠️ Can't read file " + fileName)
+	}
+
+	fileString := string(fileData)
+
+	// lines := strings.Split(fileString, "\n")
+	// for idx, line := range lines {
+	// 	fmt.Println("\033[36m  " + strconv.Itoa(idx+1) + "|  " + line + "\033[0m")
+	// }
+	// fmt.Println(" ")
+	return fileString
 }
