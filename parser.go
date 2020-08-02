@@ -30,6 +30,8 @@ func Parse(source string) (*Node, error) {
 			n, e = parseIdentifier(s)
 		case String:
 			n, e = parseString(s)
+		case OpenParenthesis:
+			n, e = parseOpenParenthesis(s)
 		case CloseParenthesis:
 			n, e = parseCloseParenthesis(s)
 		}
@@ -50,6 +52,14 @@ func parserShouldReturn(n *Node, e error) bool {
 
 func parseCloseParenthesis(s *ParserState) (*Node, error) {
 	s.currentNode = s.currentNode.Parent
+
+	return nil, nil
+}
+
+func parseOpenParenthesis(s *ParserState) (*Node, error) {
+	if n, e := catchOpenParenthesisErrors(s); parserShouldReturn(n, e) {
+		return n, e
+	}
 
 	return nil, nil
 }
@@ -113,5 +123,14 @@ func catchStringErrors(s *ParserState) (*Node, error) {
 	if s.currentToken.NextNonWhitespaceToken() == nil {
 		return nil, errors.New("Unexpected end of input")
 	}
+
+	return nil, nil
+}
+
+func catchOpenParenthesisErrors(s *ParserState) (*Node, error) {
+	if s.currentToken.NextNonWhitespaceToken() == nil {
+		return nil, errors.New("Unexpected end of input")
+	}
+
 	return nil, nil
 }

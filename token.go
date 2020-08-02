@@ -30,6 +30,33 @@ type Token struct {
 	previousToken *Token
 }
 
+func (token *Token) ResolveType() string {
+	var typeStr string
+
+	switch token.TokenType {
+	case Identifier:
+		typeStr = "identifier"
+	case OpenParenthesis:
+		typeStr = "OpenParenthesis"
+	case CloseParenthesis:
+		typeStr = "CloseParenthesis"
+	case String:
+		typeStr = "String"
+	case Colon:
+		typeStr = "Colon"
+	case NewLine:
+		typeStr = "NewLine"
+	case Tab:
+		typeStr = "Tab"
+	case Space:
+		typeStr = "Space"
+	case Comma:
+		typeStr = "Comma"
+	}
+
+	return typeStr
+}
+
 func (token *Token) Is(tokenType TokenType) bool {
 	return token.TokenType == tokenType
 }
@@ -53,12 +80,14 @@ func (token *Token) HasPreviousToken() bool {
 func (token *Token) NextNonWhitespaceToken() *Token {
 	cToken := token.nextToken
 
-	for cToken.HasNextToken() {
+	for cToken != nil {
 		if !cToken.IsWhiteSpace() {
 			return cToken
 		}
 
-		cToken = cToken.nextToken
+		if cToken.HasNextToken() {
+			cToken = cToken.nextToken
+		}
 	}
 
 	return nil
@@ -67,12 +96,14 @@ func (token *Token) NextNonWhitespaceToken() *Token {
 func (token *Token) PreviousNonWhitespaceToken() *Token {
 	cToken := token.previousToken
 
-	for cToken.HasPreviousToken() {
+	for cToken != nil {
 		if !cToken.IsWhiteSpace() {
 			return cToken
 		}
 
-		cToken = cToken.previousToken
+		if cToken.HasPreviousToken() {
+			cToken = cToken.previousToken
+		}
 	}
 
 	return nil
