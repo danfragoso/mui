@@ -72,6 +72,13 @@ func TestParser(t *testing.T) {
 		testingFunction: parseMissingParenthesisContent,
 	})
 
+	parserTests = append(parserTests, &UnitTest{
+		name:            "Just an identifier",
+		filename:        "tests/just_identifier.mui",
+		description:     "Just a single floating identifier",
+		testingFunction: parseJustAnIdentifier,
+	})
+
 	for _, test := range parserTests {
 		if err := test.Run(); err != nil {
 			test.Fail(err, t)

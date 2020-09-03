@@ -19,6 +19,14 @@ func (source *Source) getChar() rune {
 	return rune(source.rawSource[source.currentIdx-1])
 }
 
+func (source *Source) hasNextChar() bool {
+	if source.currentIdx+1 >= source.sourceLen {
+		return false
+	}
+
+	return true
+}
+
 func (source *Source) hasChar() bool {
 	if source.currentIdx == source.sourceLen {
 		return false

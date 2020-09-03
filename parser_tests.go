@@ -227,6 +227,21 @@ func parseMissingParenthesisContent(test *UnitTest) error {
 		return errors.New("🤔 Parsed node should be nil but is not, for some reason")
 	}
 
+	if err == nil {
+		return errors.New("❌ The parser should throw an missing parenthesis error")
+	}
+
+	return nil
+}
+
+func parseJustAnIdentifier(test *UnitTest) error {
+	testString := LoadTest(test.filename)
+
+	tree, err := Parse(testString)
+	if tree != nil {
+		return errors.New("🤔 Parsed node should be nil but is not, for some reason")
+	}
+
 	fmt.Println(err)
 	if err == nil {
 		return errors.New("❌ The parser should throw an missing parenthesis error")

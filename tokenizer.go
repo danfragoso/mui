@@ -23,6 +23,9 @@ func Tokenize(raw string) (*Token, error) {
 		} else {
 			if isLetter(currentChar) {
 				identifierBuffer = append(identifierBuffer, currentChar)
+				if !source.hasNextChar() {
+					tokenList.Push(createIdentifierToken(identifierBuffer, source.currentIdx))
+				}
 			} else {
 				if len(identifierBuffer) > 0 {
 					tokenList.Push(createIdentifierToken(identifierBuffer, source.currentIdx))
